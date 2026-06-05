@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.34.1 (2026-06-05)
+
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+
+
+
+**Full Changelog**: https://github.com/dograh-hq/dograh/compare/dograh-v1.34.0...dograh-v1.34.1
+
 ## 1.34.0 (2026-06-03)
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
