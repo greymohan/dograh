@@ -43,6 +43,7 @@ from api.utils.telephony_helper import (
     normalize_webhook_data,
     numbers_match,
     parse_webhook_request,
+    public_webhook_url,
 )
 
 router = APIRouter(prefix="/telephony")
@@ -724,7 +725,7 @@ async def handle_inbound_run(request: Request):
             telephony_configuration_id, config.organization_id
         )
         signature_valid = await provider_instance.verify_inbound_signature(
-            str(request.url), webhook_data, headers, raw_body
+            await public_webhook_url(request), webhook_data, headers, raw_body
         )
         if not signature_valid:
             logger.warning(
@@ -858,7 +859,7 @@ async def handle_inbound_telephony(
             provider_instance,
         ) = await _validate_inbound_request(
             workflow_id,
-            str(request.url),
+            await public_webhook_url(request),
             provider_class,
             normalized_data,
             webhook_data,

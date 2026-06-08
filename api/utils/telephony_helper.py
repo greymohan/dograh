@@ -8,6 +8,7 @@ from loguru import logger
 from starlette.responses import HTMLResponse
 
 from api.constants import COUNTRY_CODES
+from api.utils.common import get_backend_endpoints
 
 
 def numbers_match(
@@ -129,6 +130,19 @@ def generic_hangup_response():
     return HTMLResponse(
         content="<Response><Hangup/></Response>", media_type="application/xml"
     )
+
+
+async def public_webhook_url(request: Request) -> str:
+    """Public URL providers sign against (BACKEND_API_ENDPOINT), not internal request.url.
+
+    Behind a reverse proxy FastAPI often sees ``http://`` while Twilio posts to
+    ``https://`` — validating against ``str(request.url)`` then fails every call.
+    """
+    backend_endpoint, _ = await get_backend_endpoints()
+    url = f"{backend_endpoint.rstrip('/')}{request.url.path}"
+    if request.url.query:
+        url = f"{url}?{request.url.query}"
+    return url
 
 
 async def parse_webhook_request(request: Request) -> tuple[dict, str]:
